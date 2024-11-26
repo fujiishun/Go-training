@@ -11,7 +11,9 @@ type UsersProps = {
 };
 
 export async function getServerSideProps() {
-  const res = await fetch("http://backend:8080/users");
+  const backendUrl =
+    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
+  const res = await fetch(`${backendUrl}/users`);
   const users = await res.json();
 
   return {

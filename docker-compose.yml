@@ -19,6 +19,8 @@ services:
       - DB_USER=user
       - DB_PASSWORD=password
       - DB_NAME=go_db
+    volumes:
+      - ./backend:/app
 
   db:
     image: mysql:8.0

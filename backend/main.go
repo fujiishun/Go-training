@@ -1,24 +1,32 @@
 package main
 
 import (
-    "log"
-    "net/http"
+	"backend/config"
+	"backend/routes"
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+	"log"
 )
 
+func init() {
+	// 環境変数をロード
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("環境変数ファイルが見つかりません。デフォルト値を使用します。")
+	}
+}
+
 func main() {
-    // データベース初期化
-    initDB()
-    defer closeDB()
+	// Ginエンジンを初期化
+	r := gin.Default()
 
-    // ルートエンドポイント設定
-    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        w.Write([]byte("Hello, Go Backend!"))
-    })
+	// データベース接続
+	config.ConnectDB()
+	defer config.CloseDB()
 
-    // その他エンドポイント
-    http.HandleFunc("/users", usersHandler)
+	// ルート設定
+	routes.SetupRoutes(r)
 
-    // サーバー起動
-    log.Println("サーバーを起動します... http://localhost:8080")
-    log.Fatal(http.ListenAndServe(":8080", nil))
+	// サーバー起動
+	r.Run(":8080")
 }
